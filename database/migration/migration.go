@@ -3,7 +3,7 @@ package migration
 import (
 	"fmt"
 	"go-fiber-api/database"
-	"go-fiber-api/model/entity"
+	"go-fiber-api/models/entity"
 	"log"
 )
 
