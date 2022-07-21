@@ -7,6 +7,7 @@ import (
 	"go-fiber-api/database"
 	"go-fiber-api/models/entity"
 	"go-fiber-api/models/request"
+	"go-fiber-api/models/response"
 	"log"
 )
 
@@ -88,5 +89,34 @@ func CreateUser(ctx *fiber.Ctx) error {
 		"OK":      true,
 		"message": "Success create user",
 		"data":    user,
+	})
+}
+
+func GetUserById(ctx *fiber.Ctx) error {
+	userId := ctx.Params("id")
+	var users entity.User
+
+	err := database.DB.First(&users, "id = ?", userId).Error
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	userResponse := response.UserResponse{
+		ID:        users.ID,
+		Name:      users.Name,
+		Email:     users.Email,
+		Age:       users.Age,
+		Address:   users.Address,
+		Phone:     users.Phone,
+		CreatedAt: users.CreatedAt,
+		UpdatedAt: users.CreatedAt,
+	}
+
+	return ctx.Status(200).JSON(fiber.Map{
+		"OK":               true,
+		"message":          "Success get users data",
+		"dataWithResponse": userResponse,
+		"dataUsers":        users,
 	})
 }
