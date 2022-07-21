@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"go-fiber-api/database"
 	"go-fiber-api/database/migration"
 	"go-fiber-api/routes"
@@ -19,8 +20,18 @@ func main() {
 		AppName: "go-fiber-api",
 	})
 
+	app.Use(cors.New(cors.ConfigDefault))
+
 	/** Route Initialization */
 	routes.RouteInitialization(app)
+
+	/** 404 Error Handler */
+	app.Use(func(ctx *fiber.Ctx) error {
+		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"OK":      false,
+			"message": "Ooppss! 404 api not found!",
+		})
+	})
 
 	log.Fatal(app.Listen(":6000"))
 }
