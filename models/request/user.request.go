@@ -7,3 +7,10 @@ type UserCreateRequest struct {
 	Address string `json:"address"`
 	Phone   string `json:"phone"`
 }
+
+type UserUpdateRequest struct {
+	Name    string `json:"name"`
+	Age     uint8  `json:"age" validate:"number"`
+	Address string `json:"address"`
+	Phone   string `json:"phone"`
+}

@@ -22,7 +22,7 @@ func AllUsers(ctx *fiber.Ctx) error {
 		})
 	}
 
-	return ctx.Status(200).JSON(fiber.Map{
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"OK":      true,
 		"message": "Success get all users data",
 		"data":    users,
@@ -115,10 +115,65 @@ func GetUserById(ctx *fiber.Ctx) error {
 		UpdatedAt: users.CreatedAt,
 	}
 
-	return ctx.Status(200).JSON(fiber.Map{
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"OK":               true,
 		"message":          "Success get users data",
 		"dataWithResponse": userResponse,
 		"dataUsers":        users,
+	})
+}
+
+func UpdateUserById(ctx *fiber.Ctx) error {
+	userId := ctx.Params("id")
+	var users entity.User
+	user := new(request.UserUpdateRequest)
+
+	err := database.DB.Debug().First(&users, "id = ?", userId).Error
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"OK":      false,
+			"message": "User is not exist",
+		})
+	}
+
+	/** check body */
+	if errBody := ctx.BodyParser(user); errBody != nil {
+		fmt.Println("error => ", errBody)
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"OK":      false,
+			"message": errBody.Error(),
+		})
+	}
+
+	/** Validate request body */
+	validate := validator.New()
+	errValidate := validate.Struct(user)
+
+	if errValidate != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"OK":      false,
+			"message": errValidate.Error(),
+		})
+	}
+
+	/** Update user data */
+	if user.Name != "" {
+		users.Name = user.Name
+	}
+	users.Age = user.Age
+	users.Address = user.Address
+	users.Phone = user.Phone
+
+	errUpdate := database.DB.Debug().Save(&users).Error
+	if errUpdate != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"OK":      false,
+			"message": errUpdate,
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"OK":      true,
+		"message": "Success update users data",
 	})
 }

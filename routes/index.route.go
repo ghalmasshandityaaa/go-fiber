@@ -16,4 +16,5 @@ func RouteInitialization(route *fiber.App) {
 	users.Get("/", handlers.AllUsers)
 	users.Post("/", handlers.CreateUser)
 	users.Get("/:id", handlers.GetUserById)
+	users.Put("/:id", handlers.UpdateUserById)
 }
