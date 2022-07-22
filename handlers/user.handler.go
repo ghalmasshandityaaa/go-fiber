@@ -8,7 +8,6 @@ import (
 	"go-fiber-api/models/entity"
 	"go-fiber-api/models/request"
 	"go-fiber-api/models/response"
-	"log"
 )
 
 func AllUsers(ctx *fiber.Ctx) error {
@@ -17,7 +16,10 @@ func AllUsers(ctx *fiber.Ctx) error {
 	result := database.DB.Debug().Find(&users)
 
 	if result.Error != nil {
-		log.Println(result.Error)
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"OK":      false,
+			"message": result.Error,
+		})
 	}
 
 	return ctx.Status(200).JSON(fiber.Map{
@@ -42,7 +44,6 @@ func CreateUser(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"OK":      false,
 			"message": err.Error(),
-			"data":    nil,
 		})
 	}
 
@@ -63,7 +64,6 @@ func CreateUser(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"OK":      false,
 			"message": errors,
-			"data":    nil,
 		})
 	}
 
@@ -81,7 +81,6 @@ func CreateUser(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"OK":      false,
 			"message": errInsert,
-			"data":    nil,
 		})
 	}
 
@@ -99,7 +98,10 @@ func GetUserById(ctx *fiber.Ctx) error {
 	err := database.DB.First(&users, "id = ?", userId).Error
 
 	if err != nil {
-		log.Println(err)
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"OK":      false,
+			"message": err,
+		})
 	}
 
 	userResponse := response.UserResponse{
