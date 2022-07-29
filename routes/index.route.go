@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"go-fiber-api/config"
 	"go-fiber-api/handlers"
+	"go-fiber-api/middlewares"
 )
 
 func RouteInitialization(route *fiber.App) {
@@ -17,7 +18,7 @@ func RouteInitialization(route *fiber.App) {
 	/** Grouping users route */
 	users := api.Group("/users", logger.New())
 
-	users.Get("/", handlers.AllUsers)
+	users.Get("/", middlewares.Auth, handlers.AllUsers)
 	users.Post("/", handlers.CreateUser)
 	users.Get("/:id", handlers.GetUserById)
 	users.Put("/:id", handlers.UpdateUserById)
