@@ -177,3 +177,29 @@ func UpdateUserById(ctx *fiber.Ctx) error {
 		"message": "Success update users data",
 	})
 }
+
+func DeleteUserById(ctx *fiber.Ctx) error {
+	userId := ctx.Params("id")
+	var users entity.User
+
+	err := database.DB.First(&users, "id = ?", userId).Error
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"OK":      false,
+			"message": "Sorry user not found",
+		})
+	}
+
+	errDelete := database.DB.Debug().Delete(&users).Error
+	if errDelete != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"OK":      false,
+			"message": errDelete,
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"OK":      true,
+		"message": "Success deleted user",
+	})
+}
