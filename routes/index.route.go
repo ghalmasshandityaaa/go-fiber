@@ -17,10 +17,13 @@ func RouteInitialization(route *fiber.App) {
 
 	/** Grouping users route */
 	users := api.Group("/users", logger.New())
+	auth := api.Group("/auth", logger.New())
 
 	users.Get("/", middlewares.Auth, handlers.AllUsers)
 	users.Post("/", handlers.CreateUser)
 	users.Get("/:id", handlers.GetUserById)
 	users.Put("/:id", handlers.UpdateUserById)
 	users.Delete("/:id", handlers.DeleteUserById)
+
+	auth.Post("/login", handlers.Login)
 }
