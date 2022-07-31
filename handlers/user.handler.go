@@ -8,6 +8,8 @@ import (
 	"go-fiber-api/models/entity"
 	"go-fiber-api/models/request"
 	"go-fiber-api/models/response"
+	"go-fiber-api/utils"
+	"log"
 )
 
 func AllUsers(ctx *fiber.Ctx) error {
@@ -67,6 +69,8 @@ func CreateUser(ctx *fiber.Ctx) error {
 		})
 	}
 
+	/** Check email is exist or not */
+
 	/** Insert user into database */
 	newUser := entity.User{
 		Name:    user.Name,
@@ -75,6 +79,17 @@ func CreateUser(ctx *fiber.Ctx) error {
 		Phone:   user.Phone,
 		Age:     user.Age,
 	}
+
+	hashedPassword, errHash := utils.HashingPassword(user.Password)
+	if errHash != nil {
+		log.Println("Hashing Password Error => ", errHash)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"OK":      false,
+			"message": "Internal server error!",
+		})
+	}
+
+	newUser.Password = hashedPassword
 
 	errInsert := database.DB.Create(&newUser).Error
 	if errInsert != nil {
