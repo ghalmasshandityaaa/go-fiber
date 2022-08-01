@@ -14,6 +14,8 @@ import (
 
 func AllUsers(ctx *fiber.Ctx) error {
 	var users []entity.User
+	auth := ctx.Locals("auth")
+	fmt.Println("Auth Data => ", auth)
 
 	result := database.DB.Debug().Find(&users)
 

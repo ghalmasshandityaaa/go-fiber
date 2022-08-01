@@ -66,9 +66,14 @@ func Login(ctx *fiber.Ctx) error {
 	/** Generate JWT Token */
 	claims := jwt.MapClaims{
 		"name":    user.Name,
-		"email":   user.Name,
+		"email":   user.Email,
 		"address": user.Address,
 		"exp":     time.Now().Add(time.Minute * 5).Unix(),
+		"role":    "user",
+	}
+
+	if user.Email == "ghalmas@gmail.com" {
+		claims["role"] = "admin"
 	}
 
 	token, errGenerateToken := utils.GenerateAccessToken(&claims)
