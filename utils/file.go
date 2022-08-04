@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"log"
+	"os"
 	"strings"
 	"time"
 )
+
+const DefaultPathAssetImages string = "./public/images/"
 
 func UploadFile(ctx *fiber.Ctx) error {
 	/** Handle upload file */
@@ -35,4 +38,20 @@ func UploadFile(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Next()
+}
+
+func RemoveFile(filename string, path ...string) error {
+	var err error
+	if len(path) > 0 {
+		err = os.Remove(DefaultPathAssetImages + path[0] + filename)
+	} else {
+		err = os.Remove(DefaultPathAssetImages + filename)
+	}
+
+	if err != nil {
+		log.Println("Failed remove file => ", err)
+		return err
+	}
+
+	return nil
 }

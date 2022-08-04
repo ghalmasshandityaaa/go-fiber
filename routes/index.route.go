@@ -33,4 +33,5 @@ func RouteInitialization(route *fiber.App) {
 
 	/** Book route */
 	book.Post("/", utils.UploadFile, handlers.CreateBook)
+	book.Delete("/:id", handlers.DeleteBookById)
 }
