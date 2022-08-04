@@ -7,6 +7,7 @@ import (
 	"go-fiber-api/database"
 	"go-fiber-api/models/entity"
 	"go-fiber-api/models/request"
+	"go-fiber-api/utils"
 )
 
 func CreateBook(ctx *fiber.Ctx) error {
@@ -71,5 +72,43 @@ func CreateBook(ctx *fiber.Ctx) error {
 		"OK":      true,
 		"message": "Success create book",
 		"data":    newBook,
+	})
+}
+
+func DeleteBookById(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+
+	var book entity.Book
+	err := database.DB.Debug().First(&book, "id = ?", id).Error
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"OK":      false,
+			"message": "Book not found",
+		})
+	}
+
+	/** Delete book file from disk */
+	errRemove := utils.RemoveFile(book.Cover, "books/cover/")
+	if errRemove != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"OK":      false,
+			"message": errRemove.Error(),
+		})
+	} else {
+		fmt.Println("Success remove file")
+	}
+
+	//errDelete := database.DB.Debug().Delete(&book, "id = ?", id).Error
+	//if errDelete != nil {
+	//	return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+	//		"OK":      false,
+	//		"message": errDelete,
+	//	})
+	//}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"OK":      true,
+		"message": "Success delete book",
 	})
 }
