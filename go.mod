@@ -1,3 +1,4 @@
+// +heroku goVersion go1.18
 module go-fiber-api
 
 go 1.18
