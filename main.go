@@ -7,6 +7,7 @@ import (
 	"go-fiber-api/database/migration"
 	"go-fiber-api/routes"
 	"log"
+	"os"
 )
 
 func main() {
@@ -33,5 +34,10 @@ func main() {
 		})
 	})
 
-	log.Fatal(app.Listen(":6000"))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
+
+	log.Fatal(app.Listen(":" + port))
 }
