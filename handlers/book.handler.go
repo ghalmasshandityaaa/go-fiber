@@ -99,13 +99,13 @@ func DeleteBookById(ctx *fiber.Ctx) error {
 		fmt.Println("Success remove file")
 	}
 
-	//errDelete := database.DB.Debug().Delete(&book, "id = ?", id).Error
-	//if errDelete != nil {
-	//	return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-	//		"OK":      false,
-	//		"message": errDelete,
-	//	})
-	//}
+	errDelete := database.DB.Debug().Delete(&book, "id = ?", id).Error
+	if errDelete != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"OK":      false,
+			"message": errDelete,
+		})
+	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"OK":      true,

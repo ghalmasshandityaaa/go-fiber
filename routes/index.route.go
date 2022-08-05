@@ -11,7 +11,7 @@ import (
 
 func RouteInitialization(route *fiber.App) {
 	/** Static route */
-	route.Static("/public", config.ProjectRootPath+"./public/assets")
+	route.Static("/storage", config.ProjectRootPath+"./public/assets")
 
 	/** versioning api */
 	api := route.Group("/api/v1", logger.New())

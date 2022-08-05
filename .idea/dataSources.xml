@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:mysql://localhost:3306/gofiber</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="gofiber@aws/dbaksesaja" uuid="6a240b81-a386-48c8-8a3c-a4b14c53cbad">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://db-aksesaja.cnqous4emciz.ap-southeast-1.rds.amazonaws.com:5432/gofiber</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

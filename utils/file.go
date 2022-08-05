@@ -1,9 +1,11 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"log"
+	"mime/multipart"
 	"os"
 	"strings"
 	"time"
@@ -20,6 +22,16 @@ func UploadFile(ctx *fiber.Ctx) error {
 
 	var filename *string
 	if file != nil {
+		//contentType := file.Header.Get("Content-Type")
+		allowedTypes := []string{"image/jpg", "image/jpeg", "image/png"}
+		errCheck := checkAllowFileType(file, allowedTypes)
+		if errCheck != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"OK":      false,
+				"message": errCheck.Error(),
+			})
+		}
+
 		file.Filename = strings.ReplaceAll("GO"+time.Now().Format("20060102150405")+file.Filename, " ", "_")
 		filename = &file.Filename
 
@@ -51,6 +63,22 @@ func RemoveFile(filename string, path ...string) error {
 	if err != nil {
 		log.Println("Failed remove file => ", err)
 		return err
+	}
+
+	return nil
+}
+
+func checkAllowFileType(file *multipart.FileHeader, contentTypes []string) error {
+	if len(contentTypes) > 0 {
+		for _, content := range contentTypes {
+			contentType := file.Header.Get("Content-Type")
+
+			if contentType == content {
+				return nil
+			}
+		}
+
+		return errors.New("Not allowed file type")
 	}
 
 	return nil
