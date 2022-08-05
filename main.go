@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
 	"go-fiber-api/database"
 	"go-fiber-api/database/migration"
 	"go-fiber-api/routes"
@@ -11,6 +12,11 @@ import (
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Some error occured. Err: %s", err)
+	}
+
 	/** Database Initialization */
 	database.DBInitialization()
 
